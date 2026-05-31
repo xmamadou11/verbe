@@ -726,6 +726,9 @@ body.goat-mode .count-pill{
       <div class="stat-val" id="st-best">0</div>
       <div class="stat-lbl">Meilleur</div>
     </div>
+    <div class="stat-cell" style="flex:0 0 auto;padding:10px 12px;">
+      <button onclick="resetProgress()" title="Recommencer à zéro" style="background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:#f87171;border-radius:8px;padding:5px 8px;font-size:0.65em;font-weight:700;cursor:pointer;letter-spacing:.05em;white-space:nowrap;-webkit-tap-highlight-color:transparent;">🔄 Reset</button>
+    </div>
   </div>
   <div class="xp-level-banner">
     <div class="xp-level-ico" id="xpLevelIco">💩</div>
@@ -908,7 +911,7 @@ verbs.forEach(([base,past,phonBase,phonPast,french,file],i) => {
   audios[file] = audio;
   audioC.appendChild(audio);
   const tr = document.createElement("tr");
-  tr.className = i%2===0 ? "row-odd":"row-even";
+  tr.className = i%2===0 ? "row-even":"row-odd";
   tr.setAttribute("data-search",(base+" "+past+" "+french).toLowerCase());
   tr.style.animationDelay = (i*12)+"ms";
   tr.innerHTML =
@@ -990,17 +993,30 @@ try{
   const lastPlay=saved.lastPlay||0;
   const sevenDays=7*24*60*60*1000;
   if(Date.now()-lastPlay > sevenDays && lastPlay!==0){
-    // Plus de 7 jours sans jouer → reset
+    // Plus de 7 jours sans jouer → reset complet
     localStorage.removeItem("vi_state2");
-  } else {
-    if(saved.xp){xp=+saved.xp||0;}
-    if(saved.bestXP){bestXP=+saved.bestXP||0;}
-    if(saved.maxStreak){maxStreak=+saved.maxStreak||0;}
-    if(saved.totalCorrect){totalCorrect=+saved.totalCorrect||0;}
-    if(saved.totalWrong){totalWrong=+saved.totalWrong||0;}
+    xp=0; bestXP=0; maxStreak=0; totalCorrect=0; totalWrong=0;
+  } else if(saved && typeof saved.xp !== "undefined"){
+    xp=+saved.xp||0;
+    bestXP=+saved.bestXP||0;
+    maxStreak=+saved.maxStreak||0;
+    totalCorrect=+saved.totalCorrect||0;
+    totalWrong=+saved.totalWrong||0;
   }
   currentLevelObj=getLevelForXP(xp);
-}catch(e){}
+}catch(e){ xp=0; currentLevelObj=LEVELS[0]; }
+
+function resetProgress(){
+  if(!confirm("Remettre ta progression à zéro ? (Niveau 1, 0 XP)")) return;
+  xp=0; bestXP=0; maxStreak=0; totalCorrect=0; totalWrong=0;
+  streak=0; comboCount=0; sessionCorrect=0; sessionWrong=0; sessionXP=0;
+  currentLevelObj=LEVELS[0];
+  document.body.classList.remove("goat-mode");
+  try{localStorage.removeItem("vi_state2");}catch(e){}
+  saveState();
+  updateStatsUI();
+  showWelcomeLevel();
+}
 
 function saveState(){
   try{localStorage.setItem("vi_state2",JSON.stringify({xp,bestXP,maxStreak,totalCorrect,totalWrong,lastPlay:Date.now()}));}catch(e){}
@@ -1641,6 +1657,8 @@ if(isIOS()&&!isInStandaloneMode())setTimeout(showIOSToast,3000);
 
 // INIT
 updateStatsUI();
+// S'assurer qu'on commence bien au niveau 1 si c'est la première visite
+if(xp===0){ currentLevelObj=LEVELS[0]; }
 </script>
 </body>
 </html>
