@@ -513,6 +513,33 @@ footer span{color:var(--gold);}
   .btn-gold,.btn-outline{padding:9px 12px;font-size:0.78em;}
 }
 @media (max-width:360px){th,td{padding:7px 3px;}}
+
+/* ── DISINTEGRATION ANIMATION ── */
+@keyframes particleFly {
+  0%   { opacity:1; transform: translate(0,0) scale(1) rotate(0deg); }
+  100% { opacity:0; transform: translate(var(--dx),var(--dy)) scale(0) rotate(var(--dr)); }
+}
+.disintegrating {
+  position: relative;
+  overflow: visible !important;
+}
+.disintegrating .dis-particle {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  pointer-events: none;
+  animation: particleFly var(--dur) ease-out forwards;
+  z-index: 9999;
+}
+@keyframes btnFade {
+  0%   { opacity:1; transform:scale(1); filter:blur(0px); }
+  60%  { opacity:.4; transform:scale(.95); filter:blur(1px); }
+  100% { opacity:0; transform:scale(.8); filter:blur(3px); }
+}
+.disintegrating {
+  animation: btnFade .7s ease forwards;
+}
 </style>
 </head>
 <body>
@@ -856,13 +883,20 @@ let speedAutoAdv=null; // timeout for speed auto-advance
 
 try{
   const saved=JSON.parse(localStorage.getItem("vi_state2")||"{}");
-  if(saved.xp){xp=+saved.xp||0;}
-  if(saved.bestXP){bestXP=+saved.bestXP||0;}
+  const lastPlay=saved.lastPlay||0;
+  const sevenDays=7*24*60*60*1000;
+  if(Date.now()-lastPlay > sevenDays && lastPlay!==0){
+    // Plus de 7 jours sans jouer → reset
+    localStorage.removeItem("vi_state2");
+  } else {
+    if(saved.xp){xp=+saved.xp||0;}
+    if(saved.bestXP){bestXP=+saved.bestXP||0;}
+  }
   currentLevelObj=getLevelForXP(xp);
 }catch(e){}
 
 function saveState(){
-  try{localStorage.setItem("vi_state2",JSON.stringify({xp,bestXP}));}catch(e){}
+  try{localStorage.setItem("vi_state2",JSON.stringify({xp,bestXP,lastPlay:Date.now()}));}catch(e){}
 }
 
 function updateStatsUI(){
@@ -941,19 +975,24 @@ function showWelcomeLevel(){
   const nextTxt=next
     ?`Prochain niveau : <strong>${next.ico} Niv.${next.n} — ${next.name}</strong><br>Il te faut <strong>${next.xp-xp} XP</strong> de plus`
     :`<strong>🐐 Tu es déjà au niveau MAX — TU ES UN GOAT !</strong>`;
+  // Check if returning player (has XP saved)
+  const isReturning = xp > 0;
+  const btnLabel = isReturning ? "▶ Continuer l'entraînement" : "⚡ Commencer l'entraînement";
   wrap.innerHTML=`
     <div class="welcome-screen">
       <div class="welcome-card">
         <div class="wc-ico">${lv.ico}</div>
-        <div class="wc-title">Ton niveau actuel</div>
+        <div class="wc-title">${isReturning?"Bon retour !":"Ton niveau actuel"}</div>
         <div class="wc-level">Niv.${lv.n} — ${lv.name}</div>
         <div class="wc-desc">${lv.desc||""}</div>
         <div class="wc-xp">${xp} XP au total</div>
         <div class="wc-next">${nextTxt}</div>
-        <button class="wc-btn" id="wcStartBtn">⚡ Commencer l'entraînement</button>
+        <button class="wc-btn" id="wcStartBtn">${btnLabel}</button>
       </div>
     </div>`;
-  document.getElementById("wcStartBtn").addEventListener("click",()=>startQuiz());
+  document.getElementById("wcStartBtn").addEventListener("click",function(){
+    disintegrateBtn(this, ()=>startQuiz());
+  });
 }
 
 function startQuiz(pool){
@@ -1346,6 +1385,40 @@ function showResults(){
   updateStatsUI();
 }
 
+
+// ══════════════════════════════════════
+// DISINTEGRATION
+// ══════════════════════════════════════
+function disintegrateBtn(btn, callback){
+  if(!btn) return;
+  btn.classList.add("disintegrating");
+  const rect = btn.getBoundingClientRect();
+  const colors = ["#c9a84c","#f0d080","#e8758a","#5bb89a","#7ab8e8","#ffffff"];
+  const count = 38;
+  for(let i=0;i<count;i++){
+    const p = document.createElement("div");
+    p.className = "dis-particle";
+    const angle = (Math.PI*2/count)*i + (Math.random()-.5)*.8;
+    const dist = 40 + Math.random()*80;
+    const dx = Math.cos(angle)*dist;
+    const dy = Math.sin(angle)*dist - Math.random()*30;
+    const dr = (Math.random()-0.5)*720;
+    const dur = (.4+Math.random()*.5)+"s";
+    const size = (4+Math.random()*6)+"px";
+    p.style.cssText = `
+      --dx:${dx}px;--dy:${dy}px;--dr:${dr}deg;--dur:${dur};
+      width:${size};height:${size};
+      left:${Math.random()*100}%;top:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      border-radius:${Math.random()>.5?"50%":"2px"};
+    `;
+    btn.appendChild(p);
+  }
+  setTimeout(()=>{
+    btn.style.display="none";
+    if(callback) callback();
+  }, 700);
+}
 // ══════════════════════════════════════
 // PWA / INSTALL
 // ══════════════════════════════════════
@@ -1377,7 +1450,11 @@ window.addEventListener("beforeinstallprompt",e=>{
   document.getElementById("installBtn").style.display="inline-flex";
 });
 window.addEventListener("appinstalled",()=>{
-  document.getElementById("installBtn").style.display="none";hideToast();
+  const dlBtn=document.getElementById("dlBtn");
+  const instBtn=document.getElementById("installBtn");
+  disintegrateBtn(dlBtn);
+  disintegrateBtn(instBtn);
+  hideToast();
 });
 document.getElementById("installBtn").addEventListener("click",triggerInstall);
 document.getElementById("dlBtn").addEventListener("click",()=>{
@@ -1391,7 +1468,10 @@ async function triggerInstall(){
     deferredPrompt.prompt();
     const{outcome}=await deferredPrompt.userChoice;
     deferredPrompt=null;
-    if(outcome==="accepted")document.getElementById("installBtn").style.display="none";
+    if(outcome==="accepted"){
+      disintegrateBtn(document.getElementById("installBtn"));
+      disintegrateBtn(document.getElementById("dlBtn"));
+    }
   } else if(isIOS()){showIOSToast();}
   else{showDesktopToast();}
 }
