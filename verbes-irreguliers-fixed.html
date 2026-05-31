@@ -1589,20 +1589,36 @@ try{
 }catch(e){}
 
 let deferredPrompt=null;
+function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream;}
+function isInStandaloneMode(){return window.navigator.standalone===true||window.matchMedia("(display-mode:standalone)").matches||window.matchMedia("(display-mode:fullscreen)").matches;}
+function markInstalled(){
+  try{localStorage.setItem("vi_installed","1");}catch(e){}
+  const dlBtn=document.getElementById("dlBtn");
+  const instBtn=document.getElementById("installBtn");
+  if(dlBtn)dlBtn.style.display="none";
+  if(instBtn)instBtn.style.display="none";
+}
+// Cacher le bouton immédiatement si déjà installé (mode standalone ou flag localStorage)
+(function(){
+  const alreadyInstalled=isInStandaloneMode()||(()=>{try{return localStorage.getItem("vi_installed")==="1";}catch(e){return false;}})();
+  if(alreadyInstalled){
+    const dlBtn=document.getElementById("dlBtn");
+    const instBtn=document.getElementById("installBtn");
+    if(dlBtn)dlBtn.style.display="none";
+    if(instBtn)instBtn.style.display="none";
+  }
+})();
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();deferredPrompt=e;
   document.getElementById("installBtn").style.display="inline-flex";
 });
 window.addEventListener("appinstalled",()=>{
-  const dlBtn=document.getElementById("dlBtn");
-  const instBtn=document.getElementById("installBtn");
-  disintegrateBtn(dlBtn);
-  disintegrateBtn(instBtn);
+  markInstalled();
   hideToast();
 });
 document.getElementById("installBtn").addEventListener("click",triggerInstall);
 document.getElementById("dlBtn").addEventListener("click",()=>{
-  if(isInStandaloneMode()){showAlreadyToast();return;}
+  if(isInStandaloneMode()||localStorage.getItem("vi_installed")==="1"){showAlreadyToast();return;}
   if(deferredPrompt){triggerInstall();}
   else if(isIOS()){showIOSToast();}
   else{showDesktopToast();}
@@ -1612,15 +1628,10 @@ async function triggerInstall(){
     deferredPrompt.prompt();
     const{outcome}=await deferredPrompt.userChoice;
     deferredPrompt=null;
-    if(outcome==="accepted"){
-      disintegrateBtn(document.getElementById("installBtn"));
-      disintegrateBtn(document.getElementById("dlBtn"));
-    }
+    if(outcome==="accepted"){markInstalled();}
   } else if(isIOS()){showIOSToast();}
   else{showDesktopToast();}
 }
-function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream;}
-function isInStandaloneMode(){return window.navigator.standalone===true||window.matchMedia("(display-mode:standalone)").matches||window.matchMedia("(display-mode:fullscreen)").matches;}
 function showIOSToast(){
   document.getElementById("toastMsg").innerHTML=`Sur iPhone/iPad : appuyez sur <strong>Partager ⬆</strong> puis <strong>« Sur l'écran d'accueil »</strong>`;
   document.getElementById("toastInstall").style.display="none";
@@ -1646,14 +1657,13 @@ document.getElementById("toastClose").addEventListener("click",hideToast);
 document.getElementById("toastLater").addEventListener("click",hideToast);
 document.getElementById("toastDone").addEventListener("click",()=>{
   hideToast();
-  disintegrateBtn(document.getElementById("dlBtn"));
-  disintegrateBtn(document.getElementById("installBtn"));
+  markInstalled(); // sauvegarde + cache le bouton
 });
 document.getElementById("toastInstall").addEventListener("click",async()=>{
   hideToast();
   if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;}
 });
-if(isIOS()&&!isInStandaloneMode())setTimeout(showIOSToast,3000);
+if(isIOS()&&!isInStandaloneMode()&&localStorage.getItem("vi_installed")!=="1")setTimeout(showIOSToast,3000);
 
 // INIT
 updateStatsUI();
