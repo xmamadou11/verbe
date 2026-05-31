@@ -271,6 +271,7 @@ footer span{color:var(--gold);}
   font-family:'Cormorant Garamond',serif;font-size:1.7em;font-weight:700;
   color:var(--gold2);line-height:1.2;margin-bottom:16px;
 }
+.level-popup-desc{font-size:.82em;color:var(--sky);font-style:italic;margin-bottom:8px;line-height:1.4;}
 .level-popup-xp{font-size:.85em;color:var(--muted);}
 .level-popup-btn{
   margin-top:20px;width:100%;padding:13px;
@@ -279,6 +280,43 @@ footer span{color:var(--gold);}
   font-size:.92em;font-weight:700;cursor:pointer;
   -webkit-tap-highlight-color:transparent;
 }
+
+/* WELCOME SCREEN */
+.welcome-screen{
+  max-width:640px;margin:20px auto 0;padding:0 16px;
+}
+.welcome-card{
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:28px 24px;box-shadow:0 16px 48px rgba(0,0,0,.45);text-align:center;
+}
+.welcome-card .wc-ico{font-size:3em;margin-bottom:10px;}
+.welcome-card .wc-title{
+  font-family:"Cormorant Garamond",serif;font-size:1.1em;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;
+}
+.welcome-card .wc-level{
+  font-family:"Cormorant Garamond",serif;font-size:2em;font-weight:700;
+  color:var(--gold2);line-height:1.2;margin-bottom:8px;
+}
+.welcome-card .wc-desc{
+  font-size:.88em;color:var(--sky);font-style:italic;
+  margin-bottom:6px;line-height:1.5;
+}
+.welcome-card .wc-xp{font-size:.8em;color:var(--muted);margin-bottom:20px;}
+.welcome-card .wc-next{
+  font-size:.78em;color:var(--muted);
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:10px;padding:10px;margin-bottom:20px;line-height:1.5;
+}
+.welcome-card .wc-next strong{color:var(--gold);}
+.wc-btn{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0c0f1a;
+  border:none;border-radius:12px;font-family:"DM Sans",sans-serif;
+  font-size:.95em;font-weight:700;cursor:pointer;
+  transition:opacity .18s,transform .12s;-webkit-tap-highlight-color:transparent;
+}
+.wc-btn:active{transform:scale(.97);}
 
 /* MODE SELECTOR */
 .mode-selector{
@@ -630,6 +668,7 @@ footer span{color:var(--gold);}
     <div class="level-popup-ico" id="levelPopupIco">🎉</div>
     <div class="level-popup-title">Niveau <span id="levelPopupNum">2</span> débloqué !</div>
     <div class="level-popup-name" id="levelPopupName">Deux pieds triangle</div>
+    <div class="level-popup-desc" id="levelPopupDesc"></div>
     <div class="level-popup-xp" id="levelPopupXp">Total : 100 XP</div>
     <button class="level-popup-btn" id="levelPopupBtn">Continuer 🚀</button>
   </div>
@@ -642,16 +681,16 @@ footer span{color:var(--gold);}
 // LEVEL DEFINITIONS
 // ══════════════════════════════════════
 const LEVELS = [
-  {n:1,  name:"Tu pues la merde",       ico:"💩", xp:0},
-  {n:2,  name:"Deux pieds triangle",    ico:"📐", xp:100},
-  {n:3,  name:"Toujours éclaté",        ico:"🥴", xp:250},
-  {n:4,  name:"Joueur du dimanche",     ico:"😐", xp:450},
-  {n:5,  name:"Tu commences à capter",  ico:"🙂", xp:700},
-  {n:6,  name:"Solide sur les appuis",  ico:"💪", xp:1000},
-  {n:7,  name:"Chaud bouillant",        ico:"🔥", xp:1400},
-  {n:8,  name:"Machine de guerre",      ico:"⚔️",  xp:1900},
-  {n:9,  name:"T'es un tigre",          ico:"🐯", xp:2500},
-  {n:10, name:"TU ES UN GOAT",          ico:"🐐", xp:3200},
+  {n:1,  name:"Tu pues la merde",       ico:"💩", xp:0,    desc:"Le grand départ, y'a tout à prouver"},
+  {n:2,  name:"Deux pieds triangle",    ico:"📐", xp:100,  desc:"Même pas le niveau pour avoir les pieds carrés"},
+  {n:3,  name:"Toujours éclaté",        ico:"🥴", xp:250,  desc:"Y'a du mieux, mais c'est pas encore ça"},
+  {n:4,  name:"Joueur du dimanche",     ico:"😐", xp:450,  desc:"Tu t'amuses, mais tu te fais carry"},
+  {n:5,  name:"Tu commences à capter",  ico:"🙂", xp:700,  desc:"Le milieu de tableau, tu gères les bases"},
+  {n:6,  name:"Solide sur les appuis",  ico:"💪", xp:1000, desc:"On commence à te respecter dans le lobby"},
+  {n:7,  name:"Chaud bouillant",        ico:"🔥", xp:1400, desc:"Tu enchaînes les bonnes actions"},
+  {n:8,  name:"Machine de guerre",      ico:"⚔️",  xp:1900, desc:"Tu fais peur à l'équipe d'en face"},
+  {n:9,  name:"T'es un tigre",          ico:"🐯", xp:2500, desc:"L'avant-dernière étape, tu as la dalle"},
+  {n:10, name:"TU ES UN GOAT",          ico:"🐐", xp:3200, desc:"Le boss final, respect éternel"},
 ];
 function getLevelForXP(x){
   let l=LEVELS[0];
@@ -725,7 +764,7 @@ const verbs = [
 // ══════════════════════════════════════
 // TABLE
 // ══════════════════════════════════════
-const BASE_URL = "https://xmamadou11.github.io/verbes/";
+const BASE_URL = "https://xmamadou11.github.io/verbe/";
 const tbody  = document.getElementById("verbBody");
 const audioC = document.getElementById("audioContainer");
 const audios = {};
@@ -795,7 +834,7 @@ document.querySelectorAll(".nav-tab").forEach(tab=>{
     document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"));
     document.getElementById(pageId).classList.add("active");
     tab.classList.add("active");
-    if(pageId==="page-train" && !quizStarted) startQuiz();
+    if(pageId==="page-train" && !quizStarted) showWelcomeLevel();
   });
 });
 
@@ -851,7 +890,7 @@ function updateStatsUI(){
 
 function addXP(n){
   const prevLv=getLevelForXP(xp);
-  xp+=n; sessionXP+=n;
+  xp=Math.max(0,xp+n); sessionXP+=n;
   if(xp>bestXP){bestXP=xp;}
   const newLv=getLevelForXP(xp);
   saveState();
@@ -866,6 +905,7 @@ function showLevelPopup(lv){
   document.getElementById("levelPopupIco").textContent=lv.ico;
   document.getElementById("levelPopupNum").textContent=lv.n;
   document.getElementById("levelPopupName").textContent=lv.name;
+  document.getElementById("levelPopupDesc").textContent=lv.desc||"";
   document.getElementById("levelPopupXp").textContent="Total : "+xp+" XP";
   document.getElementById("levelPopup").classList.add("show");
 }
@@ -891,6 +931,30 @@ document.getElementById("replayMissedBtn").addEventListener("click",()=>replayMi
 // QUIZ ENGINE
 // ══════════════════════════════════════
 function shuffle(arr){return [...arr].sort(()=>Math.random()-.5);}
+
+function showWelcomeLevel(){
+  const lv=getLevelForXP(xp);
+  const next=getNextLevel(lv);
+  const wrap=document.getElementById("quizWrap");
+  document.getElementById("resultsScreen").classList.remove("show");
+  wrap.style.display="";
+  const nextTxt=next
+    ?`Prochain niveau : <strong>${next.ico} Niv.${next.n} — ${next.name}</strong><br>Il te faut <strong>${next.xp-xp} XP</strong> de plus`
+    :`<strong>🐐 Tu es déjà au niveau MAX — TU ES UN GOAT !</strong>`;
+  wrap.innerHTML=`
+    <div class="welcome-screen">
+      <div class="welcome-card">
+        <div class="wc-ico">${lv.ico}</div>
+        <div class="wc-title">Ton niveau actuel</div>
+        <div class="wc-level">Niv.${lv.n} — ${lv.name}</div>
+        <div class="wc-desc">${lv.desc||""}</div>
+        <div class="wc-xp">${xp} XP au total</div>
+        <div class="wc-next">${nextTxt}</div>
+        <button class="wc-btn" id="wcStartBtn">⚡ Commencer l'entraînement</button>
+      </div>
+    </div>`;
+  document.getElementById("wcStartBtn").addEventListener("click",()=>startQuiz());
+}
 
 function startQuiz(pool){
   clearTimer();
