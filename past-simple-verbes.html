@@ -2,6 +2,13 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-M74L3K9H');</script>
+<!-- End Google Tag Manager -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Verbes Irréguliers – Past Simple</title>
 <meta name="application-name" content="Verbes Irréguliers">
@@ -253,6 +260,47 @@ td:nth-child(6){width:46px;padding:9px 5px;}
 
 footer{position:relative;z-index:1;text-align:center;padding:18px;color:var(--muted);font-size:.74em;letter-spacing:.06em;border-top:1px solid var(--border);}
 footer span{color:var(--gold);}
+
+/* ═══════ COOKIE BANNER ═══════ */
+#cookieBanner{
+  display:none;position:fixed;
+  bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+  z-index:1500;background:var(--toast-bg);border:1px solid var(--border);border-radius:16px;
+  padding:18px 20px 16px;max-width:360px;width:calc(100vw - 32px);
+  box-shadow:0 12px 48px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.12);
+  animation:toastIn .35s cubic-bezier(.34,1.25,.64,1);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+#cookieBanner.visible{display:block;}
+.cookie-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;}
+.cookie-ico{font-size:1.5em;line-height:1;flex-shrink:0;margin-top:1px;}
+.cookie-text{flex:1;min-width:0;}
+.cookie-text strong{
+  display:block;font-family:'Cormorant Garamond',serif;font-size:1.05em;
+  font-weight:700;color:var(--white);margin-bottom:4px;
+}
+.cookie-text p{font-size:0.79em;color:var(--muted);line-height:1.55;margin:0;}
+.cookie-text a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.35);}
+.cookie-text a:hover{border-bottom-color:var(--gold);}
+.cookie-actions{display:flex;gap:8px;}
+.cookie-btn-accept{
+  flex:2;padding:10px 12px;border-radius:10px;
+  background:linear-gradient(135deg,#c9a84c,#f0d080);color:#0c0f1a;
+  border:none;font-family:'DM Sans',sans-serif;font-size:0.82em;font-weight:700;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:opacity .18s,transform .15s;
+}
+.cookie-btn-accept:hover{opacity:.88;transform:translateY(-1px);}
+.cookie-btn-accept:active{transform:scale(.96);}
+.cookie-btn-decline{
+  flex:1;padding:10px 10px;border-radius:10px;
+  background:var(--btn-outline-bg);color:var(--muted);
+  border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:0.82em;font-weight:500;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background .18s,border-color .18s,transform .15s;
+}
+.cookie-btn-decline:hover{background:var(--wc-next-bg);}
+.cookie-btn-decline:active{transform:scale(.96);}
 
 /* ═══════ ENTRAÎNEMENT ═══════ */
 #page-train{padding-bottom:calc(80px + env(safe-area-inset-bottom));}
@@ -882,6 +930,10 @@ body.light-mode .toast-later{background:rgba(0,0,0,.06);color:var(--muted);}
 </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M74L3K9H"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <nav class="nav-tabs">
   <button class="nav-tab active" data-page="page-table" id="tabTable">
@@ -945,6 +997,21 @@ body.light-mode .toast-later{background:rgba(0,0,0,.06);color:var(--muted);}
   </div>
 </div>
 <footer><span>53 verbes irréguliers</span> · Past Simple · Anglais–Français<br><span style="font-size:.85em;color:var(--muted);letter-spacing:.04em;">fait par <span style="color:var(--gold)">Mamadou</span></span></footer>
+</div>
+
+<!-- ═══════ COOKIE BANNER ═══════ -->
+<div id="cookieBanner" role="dialog" aria-label="Préférences cookies">
+  <div class="cookie-top">
+    <div class="cookie-ico">🍪</div>
+    <div class="cookie-text">
+      <strong>Cookies & Analytics</strong>
+      <p>On utilise Google Analytics pour comprendre comment l'appli est utilisée — aucune donnée personnelle, pas de pub.</p>
+    </div>
+  </div>
+  <div class="cookie-actions">
+    <button class="cookie-btn-accept" id="cookieAccept">Accepter</button>
+    <button class="cookie-btn-decline" id="cookieDecline">Refuser</button>
+  </div>
 </div>
 
 <!-- ═══════ PAGE : ENTRAÎNEMENT ═══════ -->
@@ -2069,35 +2136,37 @@ document.getElementById("levelsModal").addEventListener("click",function(e){
   if(e.target===this) hideLevelsModal();
 });
 
+// ══════════════════════════════════════
+// COOKIE BANNER
+// ══════════════════════════════════════
+(function(){
+  var COOKIE_KEY='vi_cookie_consent';
+  var banner=document.getElementById('cookieBanner');
+  if(!banner)return;
+  try{
+    var saved=localStorage.getItem(COOKIE_KEY);
+    if(saved)return; // déjà choisi : on ne montre rien
+  }catch(e){}
+  // Affiche après un délai pour ne pas bloquer le rendu
+  setTimeout(function(){banner.classList.add('visible');},1400);
+  document.getElementById('cookieAccept').addEventListener('click',function(){
+    try{localStorage.setItem(COOKIE_KEY,'accepted');}catch(e){}
+    banner.classList.remove('visible');
+    // Active GTM dataLayer si besoin
+    window.dataLayer=window.dataLayer||[];
+    window.dataLayer.push({event:'cookie_consent_accepted'});
+  });
+  document.getElementById('cookieDecline').addEventListener('click',function(){
+    try{localStorage.setItem(COOKIE_KEY,'declined');}catch(e){}
+    banner.classList.remove('visible');
+  });
+})();
+
 // INIT
 updateStatsUI();
 // S'assurer qu'on commence bien au niveau 1 si c'est la première visite
 if(xp===0){ currentLevelObj=LEVELS[0]; } else { currentLevelObj=getLevelForXP(xp); }
 </script>
 
-<!-- ═══════ FIREBASE ═══════ -->
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDcB709Tvgd8t2zUopXwcxa6haalvsyRTA",
-    authDomain: "verbes-9e2bf.firebaseapp.com",
-    projectId: "verbes-9e2bf",
-    storageBucket: "verbes-9e2bf.firebasestorage.app",
-    messagingSenderId: "615388950674",
-    appId: "1:615388950674:web:eacc64947fc83fbbddb64b",
-    measurementId: "G-NYKNCQDPNZ"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
 </body>
 </html>
