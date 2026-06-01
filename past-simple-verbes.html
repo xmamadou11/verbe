@@ -1840,6 +1840,12 @@ try{
 
 let deferredPrompt=null;
 function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream;}
+function isIPad(){return /ipad/i.test(navigator.userAgent)||(/macintosh/i.test(navigator.userAgent)&&navigator.maxTouchPoints>1);}
+function isIPhone(){return /iphone|ipod/i.test(navigator.userAgent)&&!window.MSStream;}
+function isFirefox(){return /firefox/i.test(navigator.userAgent);}
+function isSafariBrowser(){return /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent);}
+function isEdgeBrowser(){return /edg\//i.test(navigator.userAgent);}
+function isChromeBrowser(){return /chrome/i.test(navigator.userAgent)&&!/edg\//i.test(navigator.userAgent);}
 function isInStandaloneMode(){return window.navigator.standalone===true||window.matchMedia("(display-mode:standalone)").matches||window.matchMedia("(display-mode:fullscreen)").matches;}
 function markInstalled(){
   try{localStorage.setItem("vi_installed","1");}catch(e){}
@@ -1882,13 +1888,29 @@ async function triggerInstall(){
   else{showDesktopToast();}
 }
 function showIOSToast(){
-  document.getElementById("toastMsg").innerHTML=`Sur iPhone/iPad : appuyez sur <strong>Partager ⬆</strong> puis <strong>« Sur l'écran d'accueil »</strong>`;
+  if(isIPad()){
+    document.getElementById("toastMsg").innerHTML=`Sur iPad : appuyez sur <strong>Partager ⬆</strong> (en haut à droite) puis <strong>« Sur l'écran d'accueil »</strong>`;
+  } else {
+    document.getElementById("toastMsg").innerHTML=`Sur iPhone : appuyez sur <strong>Partager ⬆</strong> (en bas) puis <strong>« Sur l'écran d'accueil »</strong>`;
+  }
   document.getElementById("toastInstall").style.display="none";
   document.getElementById("toastDone").style.display="";
   document.getElementById("installToast").style.display="block";
 }
 function showDesktopToast(){
-  document.getElementById("toastMsg").innerHTML=`Sur Chrome/Edge : cliquez sur l'icône <strong>⊕ Installer</strong> dans la barre d'adresse.`;
+  let msg;
+  if(isFirefox()){
+    msg=`Sur Firefox : l'installation d'applis web n'est pas encore supportée. Ouvrez cette page dans <strong>Chrome</strong> ou <strong>Edge</strong> pour l'installer.`;
+  } else if(isSafariBrowser()){
+    msg=`Sur Safari (Mac) : ouvrez le menu <strong>Fichier</strong> puis <strong>« Ajouter au Dock… »</strong>`;
+  } else if(isEdgeBrowser()){
+    msg=`Sur Edge : cliquez sur l'icône <strong>⊕ Installer</strong> dans la barre d'adresse, ou menu <strong>⋯ → Applis → Installer ce site en tant qu'appli</strong>`;
+  } else if(isChromeBrowser()){
+    msg=`Sur Chrome : cliquez sur l'icône <strong>⊕ Installer</strong> dans la barre d'adresse`;
+  } else {
+    msg=`Cliquez sur l'icône <strong>⊕ Installer</strong> dans la barre d'adresse (Chrome/Edge), ou ouvrez le menu du navigateur pour installer cette appli.`;
+  }
+  document.getElementById("toastMsg").innerHTML=msg;
   document.getElementById("toastInstall").style.display="none";
   document.getElementById("installToast").style.display="block";
 }
