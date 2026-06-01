@@ -1774,17 +1774,25 @@ if(xp===0){ currentLevelObj=LEVELS[0]; }
 
 <!-- ═══════ FIREBASE ═══════ -->
 <script type="module">
+  // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
-    apiKey: "AIzaSyBSU-LVAtX-m3uld0yi_xYwzOVTieQ_8fA",
-    authDomain: "verbes-b8376.firebaseapp.com",
-    projectId: "verbes-b8376",
-    storageBucket: "verbes-b8376.firebasestorage.app",
-    messagingSenderId: "711433873731",
-    appId: "1:711433873731:web:0478e1850e294b327e27f6",
-    measurementId: "G-NDFNWSHW7Z"
+    apiKey: "AIzaSyDcB709Tvgd8t2zUopXwcxa6haalvsyRTA",
+    authDomain: "verbes-9e2bf.firebaseapp.com",
+    projectId: "verbes-9e2bf",
+    storageBucket: "verbes-9e2bf.firebasestorage.app",
+    messagingSenderId: "615388950674",
+    appId: "1:615388950674:web:eacc64947fc83fbbddb64b",
+    measurementId: "G-NYKNCQDPNZ"
   };
+
+  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
 </script>
