@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="Verbes 🇬🇧">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0c0f1a">
+<meta name="color-scheme" content="dark light">
 <link id="manifest-link" rel="manifest">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%230c0f1a'/%3E%3Ctext x='96' y='130' font-size='100' text-anchor='middle'%3E%F0%9F%87%AC%F0%9F%87%A7%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -163,12 +164,14 @@ header p{margin-top:10px;font-size:0.85em;color:var(--muted);max-width:460px;mar
 .btn-group{display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;}
 .btn-gold{
   display:inline-flex;align-items:center;gap:6px;
-  background:linear-gradient(135deg,#c9a84c,#f0d080);color:#0c0f1a;
+  background:linear-gradient(135deg,#c9a84c,#f0d080) !important;color:#0c0f1a !important;
   border:none;border-radius:40px;padding:10px 16px;
   font-family:'DM Sans',sans-serif;font-size:0.82em;font-weight:700;
   cursor:pointer;white-space:nowrap;
   transition:opacity .18s,transform .15s,box-shadow .18s;
   box-shadow:0 4px 16px rgba(201,168,76,.22);-webkit-tap-highlight-color:transparent;
+  -webkit-text-fill-color:#0c0f1a !important;
+  forced-color-adjust:none;
 }
 .btn-gold:hover{opacity:.88;transform:translateY(-1px);}
 .btn-gold:active{transform:scale(.95);}
@@ -353,6 +356,56 @@ footer span{color:var(--gold);}
   -webkit-tap-highlight-color:transparent;
 }
 
+/* LEVELS MODAL */
+.levels-modal{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.80);z-index:2100;
+  display:none;align-items:center;justify-content:center;
+  padding:20px;
+}
+.levels-modal.show{display:flex;animation:fadeIn .25s ease;}
+.levels-modal-card{
+  background:var(--card);border:1px solid var(--border);border-radius:24px;
+  padding:24px 20px;max-width:380px;width:100%;max-height:90dvh;overflow-y:auto;
+  box-shadow:0 0 60px rgba(201,168,76,.15),0 24px 64px rgba(0,0,0,.4);
+  animation:popIn .35s cubic-bezier(.34,1.56,.64,1);
+}
+.levels-modal-title{
+  font-family:'Cormorant Garamond',serif;font-size:1.5em;font-weight:700;
+  color:var(--gold2);text-align:center;margin-bottom:18px;letter-spacing:.05em;
+}
+.levels-list{display:flex;flex-direction:column;gap:8px;}
+.level-row{
+  display:flex;align-items:center;gap:12px;
+  background:var(--choice-bg);border:1.5px solid var(--border);
+  border-radius:12px;padding:11px 14px;
+  transition:border-color .2s,background .2s;
+}
+.level-row.current-level{
+  border-color:var(--gold);background:rgba(201,168,76,.10);
+}
+.level-row.unlocked{border-color:rgba(74,222,128,.35);}
+.level-row.locked{opacity:.45;}
+.level-row-ico{font-size:1.6em;line-height:1;flex-shrink:0;width:32px;text-align:center;}
+.level-row-info{flex:1;min-width:0;}
+.level-row-name{
+  font-family:'Cormorant Garamond',serif;font-size:1em;font-weight:700;
+  color:var(--white);line-height:1.3;white-space:normal;word-break:break-word;
+}
+.level-row.current-level .level-row-name{color:var(--gold2);}
+.level-row-desc{font-size:.72em;color:var(--muted);margin-top:2px;font-style:italic;}
+.level-row-right{text-align:right;flex-shrink:0;}
+.level-row-num{font-size:.65em;font-weight:700;letter-spacing:.07em;color:var(--muted);text-transform:uppercase;}
+.level-row-xp{font-size:.78em;font-weight:700;color:var(--gold);margin-top:2px;}
+.level-row.unlocked .level-row-xp{color:var(--green);}
+.levels-modal-close{
+  width:100%;margin-top:18px;padding:12px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0c0f1a;
+  border:none;border-radius:12px;font-family:'DM Sans',sans-serif;
+  font-size:.9em;font-weight:700;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
 /* WELCOME SCREEN */
 .welcome-screen{
   max-width:640px;margin:20px auto 0;padding:0 16px;
@@ -395,14 +448,15 @@ footer span{color:var(--gold);}
   position:relative;z-index:1;display:flex;gap:8px;
   padding:14px 16px 0;max-width:640px;margin:0 auto;
   overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+  box-sizing:border-box;
 }
 .mode-selector::-webkit-scrollbar{display:none;}
 .mode-btn{
-  flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:3px;
+  flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:3px;
   background:var(--card);border:1.5px solid var(--border);border-radius:12px;
-  padding:10px 14px;cursor:pointer;
+  padding:10px 8px;cursor:pointer;
   transition:border-color .2s,background .2s,transform .15s;
-  -webkit-tap-highlight-color:transparent;min-width:80px;
+  -webkit-tap-highlight-color:transparent;min-width:60px;
 }
 .mode-btn:active{transform:scale(.95);}
 .mode-btn.active{border-color:var(--gold);background:rgba(201,168,76,.09);}
@@ -411,7 +465,7 @@ footer span{color:var(--gold);}
 .mode-btn.active .mode-name{color:var(--gold);}
 
 /* QUIZ CARD */
-.quiz-wrap{position:relative;z-index:1;max-width:640px;margin:16px auto 0;padding:0 16px;}
+.quiz-wrap{position:relative;z-index:1;max-width:640px;margin:14px auto 0;padding:0 16px;box-sizing:border-box;}
 .quiz-progress{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
 .quiz-prog-bar{flex:1;height:6px;background:var(--wc-next-bg);border-radius:99px;overflow:hidden;}
 .quiz-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--sage));transition:width .4s ease;border-radius:99px;}
@@ -697,6 +751,12 @@ body.light-mode .xp-bar-txt{
   background:rgba(244,241,234,.9);color:var(--gold);
 }
 body.light-mode .toast-later{background:rgba(0,0,0,.06);color:var(--muted);}
+/* Android/forced-colors: ensure gold buttons always look gold */
+.btn-gold svg{stroke:#0c0f1a !important;color:#0c0f1a !important;}
+.wc-btn,.submit-btn,.next-btn,.replay-btn,.level-popup-btn,.levels-modal-close,.toast-install{
+  forced-color-adjust:none;
+  -webkit-text-fill-color:inherit;
+}
 @keyframes particleFly {
   0%   { opacity:1; transform: translate(0,0) scale(1) rotate(0deg); }
   100% { opacity:0; transform: translate(var(--dx),var(--dy)) scale(0) rotate(var(--dr)); }
@@ -809,8 +869,9 @@ body.light-mode .toast-later{background:rgba(0,0,0,.06);color:var(--muted);}
       <div class="stat-val" id="st-best">0</div>
       <div class="stat-lbl">Meilleur</div>
     </div>
-    <div class="stat-cell" style="flex:0 0 auto;padding:10px 12px;">
-      <button onclick="resetProgress()" title="Recommencer à zéro" style="background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:#f87171;border-radius:8px;padding:5px 8px;font-size:0.65em;font-weight:700;cursor:pointer;letter-spacing:.05em;white-space:nowrap;-webkit-tap-highlight-color:transparent;">🔄 Reset</button>
+    <div class="stat-cell" style="flex:0 0 auto;padding:10px 8px;gap:6px;flex-direction:column;">
+      <button onclick="resetProgress()" title="Recommencer à zéro" style="background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:#f87171;border-radius:8px;padding:5px 8px;font-size:0.62em;font-weight:700;cursor:pointer;letter-spacing:.05em;white-space:nowrap;-webkit-tap-highlight-color:transparent;">🔄 Reset</button>
+      <button onclick="showLevelsModal()" title="Voir tous les niveaux" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.35);color:#c9a84c;border-radius:8px;padding:5px 8px;font-size:0.62em;font-weight:700;cursor:pointer;letter-spacing:.05em;white-space:nowrap;-webkit-tap-highlight-color:transparent;">🏆 Niveaux</button>
     </div>
   </div>
   <div class="xp-level-banner">
@@ -888,6 +949,15 @@ body.light-mode .toast-later{background:rgba(0,0,0,.06);color:var(--muted);}
     <div class="level-popup-desc" id="levelPopupDesc"></div>
     <div class="level-popup-xp" id="levelPopupXp">Total : 100 XP</div>
     <button class="level-popup-btn" id="levelPopupBtn">Continuer 🚀</button>
+  </div>
+</div>
+
+<!-- Levels Modal -->
+<div class="levels-modal" id="levelsModal">
+  <div class="levels-modal-card">
+    <div class="levels-modal-title">🏆 Tous les niveaux</div>
+    <div class="levels-list" id="levelsListContainer"></div>
+    <button class="levels-modal-close" onclick="hideLevelsModal()">Fermer ✕</button>
   </div>
 </div>
 
@@ -1832,6 +1902,41 @@ if(isIOS()&&!isInStandaloneMode())setTimeout(showIOSToast,3000);
     applyTheme(next,true);
   });
 })();
+
+// ══════════════════════════════════════
+// LEVELS MODAL
+// ══════════════════════════════════════
+function showLevelsModal(){
+  const container=document.getElementById("levelsListContainer");
+  container.innerHTML="";
+  LEVELS.forEach(lv=>{
+    const unlocked=xp>=lv.xp;
+    const isCurrent=currentLevelObj.n===lv.n;
+    const div=document.createElement("div");
+    div.className="level-row"+(isCurrent?" current-level":unlocked?" unlocked":" locked");
+    const xpLabel=lv.n===1?"Départ":lv.xp.toLocaleString("fr-FR")+" XP";
+    const badge=isCurrent?'<span style="font-size:.65em;background:var(--gold);color:#0c0f1a;border-radius:6px;padding:1px 6px;font-weight:700;vertical-align:middle;margin-left:4px;">TU ES LÀ</span>':"";
+    const lockIco=unlocked?"✅":"🔒";
+    div.innerHTML=`
+      <div class="level-row-ico">${lv.ico}</div>
+      <div class="level-row-info">
+        <div class="level-row-name">Niv.${lv.n} – ${lv.name}${badge}</div>
+        <div class="level-row-desc">${lv.desc}</div>
+      </div>
+      <div class="level-row-right">
+        <div class="level-row-num">${lockIco}</div>
+        <div class="level-row-xp">${xpLabel}</div>
+      </div>`;
+    container.appendChild(div);
+  });
+  document.getElementById("levelsModal").classList.add("show");
+}
+function hideLevelsModal(){
+  document.getElementById("levelsModal").classList.remove("show");
+}
+document.getElementById("levelsModal").addEventListener("click",function(e){
+  if(e.target===this) hideLevelsModal();
+});
 
 // INIT
 updateStatsUI();
