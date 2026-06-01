@@ -2,13 +2,13 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-M74L3K9H');</script>
-<!-- End Google Tag Manager -->
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-891J7D9R32"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-891J7D9R32');
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Verbes Irréguliers – Past Simple</title>
 <meta name="application-name" content="Verbes Irréguliers">
@@ -264,43 +264,30 @@ footer span{color:var(--gold);}
 /* ═══════ COOKIE BANNER ═══════ */
 #cookieBanner{
   display:none;position:fixed;
-  bottom:calc(20px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
-  z-index:1500;background:var(--toast-bg);border:1px solid var(--border);border-radius:16px;
-  padding:18px 20px 16px;max-width:360px;width:calc(100vw - 32px);
-  box-shadow:0 12px 48px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.12);
-  animation:toastIn .35s cubic-bezier(.34,1.25,.64,1);
+  bottom:calc(16px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);
+  z-index:1500;background:var(--toast-bg);border:1px solid var(--border);border-radius:12px;
+  padding:14px 16px;max-width:340px;width:calc(100vw - 32px);
+  box-shadow:0 8px 32px rgba(0,0,0,.22);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  animation:toastIn .3s ease;
+  display:none;align-items:center;gap:12px;
 }
-#cookieBanner.visible{display:block;}
-.cookie-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;}
-.cookie-ico{font-size:1.5em;line-height:1;flex-shrink:0;margin-top:1px;}
-.cookie-text{flex:1;min-width:0;}
-.cookie-text strong{
-  display:block;font-family:'Cormorant Garamond',serif;font-size:1.05em;
-  font-weight:700;color:var(--white);margin-bottom:4px;
-}
-.cookie-text p{font-size:0.79em;color:var(--muted);line-height:1.55;margin:0;}
-.cookie-text a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,168,76,.35);}
-.cookie-text a:hover{border-bottom-color:var(--gold);}
-.cookie-actions{display:flex;gap:8px;}
+#cookieBanner.visible{display:flex;}
+.cookie-text{flex:1;font-size:0.78em;color:var(--muted);line-height:1.45;min-width:0;}
+.cookie-text a{color:var(--gold);text-decoration:none;}
+.cookie-actions{display:flex;gap:6px;flex-shrink:0;}
 .cookie-btn-accept{
-  flex:2;padding:10px 12px;border-radius:10px;
+  padding:8px 12px;border-radius:8px;
   background:linear-gradient(135deg,#c9a84c,#f0d080);color:#0c0f1a;
-  border:none;font-family:'DM Sans',sans-serif;font-size:0.82em;font-weight:700;
-  cursor:pointer;-webkit-tap-highlight-color:transparent;
-  transition:opacity .18s,transform .15s;
+  border:none;font-family:'DM Sans',sans-serif;font-size:0.78em;font-weight:700;
+  cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;
 }
-.cookie-btn-accept:hover{opacity:.88;transform:translateY(-1px);}
-.cookie-btn-accept:active{transform:scale(.96);}
 .cookie-btn-decline{
-  flex:1;padding:10px 10px;border-radius:10px;
-  background:var(--btn-outline-bg);color:var(--muted);
-  border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:0.82em;font-weight:500;
-  cursor:pointer;-webkit-tap-highlight-color:transparent;
-  transition:background .18s,border-color .18s,transform .15s;
+  padding:8px 10px;border-radius:8px;
+  background:transparent;color:var(--muted);
+  border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:0.78em;
+  cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;
 }
-.cookie-btn-decline:hover{background:var(--wc-next-bg);}
-.cookie-btn-decline:active{transform:scale(.96);}
 
 /* ═══════ ENTRAÎNEMENT ═══════ */
 #page-train{padding-bottom:calc(80px + env(safe-area-inset-bottom));}
@@ -930,10 +917,6 @@ body.light-mode .toast-later{background:rgba(0,0,0,.06);color:var(--muted);}
 </style>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M74L3K9H"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
 <nav class="nav-tabs">
   <button class="nav-tab active" data-page="page-table" id="tabTable">
@@ -1000,17 +983,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <!-- ═══════ COOKIE BANNER ═══════ -->
-<div id="cookieBanner" role="dialog" aria-label="Préférences cookies">
-  <div class="cookie-top">
-    <div class="cookie-ico">🍪</div>
-    <div class="cookie-text">
-      <strong>Cookies & Analytics</strong>
-      <p>On utilise Google Analytics pour comprendre comment l'appli est utilisée — aucune donnée personnelle, pas de pub.</p>
-    </div>
-  </div>
+<div id="cookieBanner" role="dialog" aria-label="Cookies">
+  <div class="cookie-text">🍪 Google Analytics pour comprendre l'usage — aucune pub.</div>
   <div class="cookie-actions">
-    <button class="cookie-btn-accept" id="cookieAccept">Accepter</button>
-    <button class="cookie-btn-decline" id="cookieDecline">Refuser</button>
+    <button class="cookie-btn-accept" id="cookieAccept">OK</button>
+    <button class="cookie-btn-decline" id="cookieDecline">Non</button>
   </div>
 </div>
 
@@ -2152,9 +2129,6 @@ document.getElementById("levelsModal").addEventListener("click",function(e){
   document.getElementById('cookieAccept').addEventListener('click',function(){
     try{localStorage.setItem(COOKIE_KEY,'accepted');}catch(e){}
     banner.classList.remove('visible');
-    // Active GTM dataLayer si besoin
-    window.dataLayer=window.dataLayer||[];
-    window.dataLayer.push({event:'cookie_consent_accepted'});
   });
   document.getElementById('cookieDecline').addEventListener('click',function(){
     try{localStorage.setItem(COOKIE_KEY,'declined');}catch(e){}
