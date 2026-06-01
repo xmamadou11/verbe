@@ -382,7 +382,9 @@ footer span{color:var(--gold);}
   transition:border-color .2s,background .2s;
 }
 .level-row.current-level{
-  border-color:var(--gold);background:rgba(201,168,76,.10);
+  border-color:var(--gold);background:rgba(201,168,76,.14);
+  box-shadow:0 0 0 1px rgba(201,168,76,.25),0 4px 18px rgba(201,168,76,.15);
+  position:relative;
 }
 .level-row.unlocked{border-color:rgba(74,222,128,.35);}
 .level-row.locked{opacity:.45;}
@@ -746,11 +748,106 @@ body.goat-mode .count-pill{
 body.goat-mode .level-popup-card{
   background:linear-gradient(135deg,var(--card),var(--card2)) !important;
 }
+
+/* ── GOAT MODE : adaptations MODE CLAIR ── */
+body.light-mode.goat-mode .xp-level-banner{
+  background:linear-gradient(90deg,rgba(168,118,42,.14),rgba(201,168,76,.08),rgba(168,118,42,.14));
+}
+body.light-mode.goat-mode .stats-bar{
+  background:linear-gradient(90deg,rgba(168,118,42,.1),rgba(168,118,42,.05),rgba(168,118,42,.1));
+}
+body.light-mode.goat-mode .table-wrap{
+  border-color:rgba(168,118,42,.45);
+  box-shadow:0 0 40px rgba(168,118,42,.18),0 24px 64px rgba(0,0,0,.12);
+}
+body.light-mode.goat-mode .table-head-label{
+  background:linear-gradient(90deg,var(--card2),rgba(200,160,60,.08),var(--card),rgba(200,160,60,.08),var(--card2));
+  color:var(--gold2);
+  border-bottom-color:rgba(168,118,42,.4);
+}
+/* pulseText adapté clair : ombre plus douce, visible sur fond blanc */
+@keyframes goatPulseTextLight{
+  0%,100%{filter:drop-shadow(0 0 3px rgba(168,118,42,.5));}
+  50%{filter:drop-shadow(0 0 8px rgba(168,118,42,.9));}
+}
+body.light-mode.goat-mode #st-xp,
+body.light-mode.goat-mode #st-streak,
+body.light-mode.goat-mode #st-score,
+body.light-mode.goat-mode #st-best{
+  animation:goatPulseTextLight 2s ease-in-out infinite;
+}
+body.light-mode.goat-mode td:nth-child(2){
+  animation:goatPulseTextLight 2.5s ease-in-out infinite;
+}
+/* rainbow sur texte : les couleurs restent les mêmes, ça marche en clair aussi */
+body.light-mode.goat-mode header h1 em,
+body.light-mode.goat-mode .xp-level-name,
+body.light-mode.goat-mode body.goat-mode footer span{
+  background:linear-gradient(90deg,#a8762a,#c9a84c,#c45070,#2e8a6a,#a8762a);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:goatRainbow 2s linear infinite;
+}
+body.light-mode.goat-mode .xp-bar-fill{
+  background:linear-gradient(90deg,#a8762a,#c9a84c,#c45070,#2e8a6a,#2a6fa8,#a8762a);
+  background-size:200% auto;
+  animation:goatRainbow 1.5s linear infinite;
+}
+body.light-mode.goat-mode .header-badge{
+  background:rgba(168,118,42,.15);border-color:rgba(168,118,42,.55);
+}
+body.light-mode.goat-mode .search-box input:focus{
+  border-color:rgba(168,118,42,.7);box-shadow:0 0 0 3px rgba(168,118,42,.12);
+}
+body.light-mode.goat-mode .count-pill{
+  border-color:rgba(168,118,42,.45);color:var(--gold);
+}
+body.light-mode.goat-mode .nav-tabs{
+  border-bottom-color:rgba(168,118,42,.5);
+}
+body.light-mode.goat-mode .nav-tab.active{
+  color:var(--gold2);border-bottom-color:var(--gold2);
+}
+body.light-mode.goat-mode header{
+  border-bottom-color:rgba(168,118,42,.5);
+}
+body.light-mode.goat-mode .header-line{
+  background:linear-gradient(90deg,transparent,#a8762a,#c45070,#2e8a6a,transparent);
+  height:3px;
+}
+
 /* Light mode: fix xp bar text visibility */
 body.light-mode .xp-bar-txt{
   background:rgba(244,241,234,.9);color:var(--gold);
 }
 body.light-mode .toast-later{background:rgba(0,0,0,.06);color:var(--muted);}
+@media(prefers-color-scheme:light){
+  body.goat-mode:not(.dark-mode) .xp-level-banner{
+    background:linear-gradient(90deg,rgba(168,118,42,.14),rgba(201,168,76,.08),rgba(168,118,42,.14));
+  }
+  body.goat-mode:not(.dark-mode) .stats-bar{
+    background:linear-gradient(90deg,rgba(168,118,42,.1),rgba(168,118,42,.05),rgba(168,118,42,.1));
+  }
+  body.goat-mode:not(.dark-mode) .table-wrap{
+    box-shadow:0 0 40px rgba(168,118,42,.18),0 24px 64px rgba(0,0,0,.12);
+  }
+  body.goat-mode:not(.dark-mode) .table-head-label{
+    background:linear-gradient(90deg,var(--card2),rgba(200,160,60,.08),var(--card),rgba(200,160,60,.08),var(--card2));
+  }
+  body.goat-mode:not(.dark-mode) #st-xp,
+  body.goat-mode:not(.dark-mode) #st-streak,
+  body.goat-mode:not(.dark-mode) #st-score,
+  body.goat-mode:not(.dark-mode) #st-best,
+  body.goat-mode:not(.dark-mode) td:nth-child(2){
+    animation:goatPulseTextLight 2s ease-in-out infinite;
+  }
+  body.goat-mode:not(.dark-mode) .xp-bar-fill{
+    background:linear-gradient(90deg,#a8762a,#c9a84c,#c45070,#2e8a6a,#2a6fa8,#a8762a);
+    background-size:200% auto;
+    animation:goatRainbow 1.5s linear infinite;
+  }
+}
+
 /* Android/forced-colors: ensure gold buttons always look gold */
 .btn-gold svg{stroke:#0c0f1a !important;color:#0c0f1a !important;}
 .wc-btn,.submit-btn,.next-btn,.replay-btn,.level-popup-btn,.levels-modal-close,.toast-install{
@@ -1909,27 +2006,39 @@ if(isIOS()&&!isInStandaloneMode())setTimeout(showIOSToast,3000);
 function showLevelsModal(){
   const container=document.getElementById("levelsListContainer");
   container.innerHTML="";
+  const currentLv=getLevelForXP(xp);
+  let currentRow=null;
   LEVELS.forEach(lv=>{
     const unlocked=xp>=lv.xp;
-    const isCurrent=currentLevelObj.n===lv.n;
+    const isCurrent=currentLv.n===lv.n;
     const div=document.createElement("div");
     div.className="level-row"+(isCurrent?" current-level":unlocked?" unlocked":" locked");
     const xpLabel=lv.n===1?"Départ":lv.xp.toLocaleString("fr-FR")+" XP";
-    const badge=isCurrent?'<span style="font-size:.65em;background:var(--gold);color:#0c0f1a;border-radius:6px;padding:1px 6px;font-weight:700;vertical-align:middle;margin-left:4px;">TU ES LÀ</span>':"";
-    const lockIco=unlocked?"✅":"🔒";
+    const badge=isCurrent?'<span style="font-size:.62em;background:var(--gold);color:#0c0f1a;border-radius:6px;padding:2px 7px;font-weight:800;vertical-align:middle;margin-left:6px;letter-spacing:.04em;">👈 TU ES LÀ</span>':"";
+    let statusIco;
+    if(isCurrent) statusIco='<span style="font-size:1.1em">⭐</span>';
+    else if(unlocked) statusIco='<span style="color:var(--green);font-size:1.1em">✅</span>';
+    else statusIco='<span style="font-size:1.1em">🔒</span>';
     div.innerHTML=`
-      <div class="level-row-ico">${lv.ico}</div>
+      <div class="level-row-ico">${lv.n===10&&isCurrent?"🐐":lv.ico}</div>
       <div class="level-row-info">
-        <div class="level-row-name">Niv.${lv.n} – ${lv.name}${badge}</div>
+        <div class="level-row-name">Niv.${lv.n} — ${lv.name}${badge}</div>
         <div class="level-row-desc">${lv.desc}</div>
       </div>
       <div class="level-row-right">
-        <div class="level-row-num">${lockIco}</div>
+        <div class="level-row-num">${statusIco}</div>
         <div class="level-row-xp">${xpLabel}</div>
       </div>`;
     container.appendChild(div);
+    if(isCurrent) currentRow=div;
   });
   document.getElementById("levelsModal").classList.add("show");
+  // Scroll automatiquement vers le niveau actuel
+  if(currentRow){
+    setTimeout(()=>{
+      currentRow.scrollIntoView({behavior:"smooth",block:"center"});
+    }, 120);
+  }
 }
 function hideLevelsModal(){
   document.getElementById("levelsModal").classList.remove("show");
@@ -1941,7 +2050,7 @@ document.getElementById("levelsModal").addEventListener("click",function(e){
 // INIT
 updateStatsUI();
 // S'assurer qu'on commence bien au niveau 1 si c'est la première visite
-if(xp===0){ currentLevelObj=LEVELS[0]; }
+if(xp===0){ currentLevelObj=LEVELS[0]; } else { currentLevelObj=getLevelForXP(xp); }
 </script>
 
 <!-- ═══════ FIREBASE ═══════ -->
