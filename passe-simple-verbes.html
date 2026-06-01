@@ -732,7 +732,7 @@ body.light-mode .toast-later{background:rgba(0,0,0,.06);color:var(--muted);}
   </button>
   <button class="theme-toggle" id="themeToggle" title="Changer le thème" aria-label="Basculer thème clair/sombre">
     <svg id="themeIconSun" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-    <svg id="themeIconMoon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg id="themeIconMoon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
   </button>
 </nav>
 
@@ -1676,10 +1676,9 @@ function markInstalled(){
   if(dlBtn)dlBtn.style.display="none";
   if(instBtn)instBtn.style.display="none";
 }
-// Cacher le bouton immédiatement si déjà installé (mode standalone ou flag localStorage)
+// Cacher le bouton uniquement si vraiment en mode standalone (app installée et lancée depuis l'écran d'accueil)
 (function(){
-  const alreadyInstalled=isInStandaloneMode()||(()=>{try{return localStorage.getItem("vi_installed")==="1";}catch(e){return false;}})();
-  if(alreadyInstalled){
+  if(isInStandaloneMode()){
     const dlBtn=document.getElementById("dlBtn");
     const instBtn=document.getElementById("installBtn");
     if(dlBtn)dlBtn.style.display="none";
@@ -1696,7 +1695,7 @@ window.addEventListener("appinstalled",()=>{
 });
 document.getElementById("installBtn").addEventListener("click",triggerInstall);
 document.getElementById("dlBtn").addEventListener("click",()=>{
-  if(isInStandaloneMode()||localStorage.getItem("vi_installed")==="1"){showAlreadyToast();return;}
+  if(isInStandaloneMode()){showAlreadyToast();return;}
   if(deferredPrompt){triggerInstall();}
   else if(isIOS()){showIOSToast();}
   else{showDesktopToast();}
@@ -1735,13 +1734,13 @@ document.getElementById("toastClose").addEventListener("click",hideToast);
 document.getElementById("toastLater").addEventListener("click",hideToast);
 document.getElementById("toastDone").addEventListener("click",()=>{
   hideToast();
-  markInstalled(); // sauvegarde + cache le bouton
+  markInstalled(); // cache le bouton
 });
 document.getElementById("toastInstall").addEventListener("click",async()=>{
   hideToast();
   if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;}
 });
-if(isIOS()&&!isInStandaloneMode()&&localStorage.getItem("vi_installed")!=="1")setTimeout(showIOSToast,3000);
+if(isIOS()&&!isInStandaloneMode())setTimeout(showIOSToast,3000);
 
 // ══════════════════════════════════════
 // THEME TOGGLE
@@ -1798,10 +1797,13 @@ if(isIOS()&&!isInStandaloneMode()&&localStorage.getItem("vi_installed")!=="1")se
   if(saved){
     applyTheme(saved,true);
   } else {
-    // Pas de choix manuel : on laisse le CSS gérer, on sync juste l'icône
+    // Pas de choix manuel : on laisse le CSS @media gérer les couleurs,
+    // mais on synchronise l'icône avec la préférence système actuelle
     const isDark=prefersDark.matches;
     sun.style.display=isDark?"none":"block";
     moon.style.display=isDark?"block":"none";
+    const meta=document.querySelector('meta[name="theme-color"]');
+    if(meta)meta.setAttribute("content",isDark?"#0c0f1a":"#f4f1ea");
   }
 
   // Écoute les changements système en temps réel (quand pas de choix manuel)
