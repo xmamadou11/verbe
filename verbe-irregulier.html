@@ -18,10 +18,16 @@
 (function(){
   var saved;
   try{saved=localStorage.getItem("vi_theme");}catch(e){}
-  var prefersDark=window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches;
-  var theme=saved||(prefersDark?"dark":"light");
-  if(theme==="light"){document.documentElement.setAttribute("data-theme","light");}
-  else{document.documentElement.setAttribute("data-theme","dark");}
+  // Si l'utilisateur a fait un choix manuel, on l'applique
+  // Sinon on laisse le CSS @media gérer automatiquement
+  if(saved==="light"){
+    document.documentElement.setAttribute("data-theme","light");
+    document.documentElement.classList.add("theme-manual");
+  } else if(saved==="dark"){
+    document.documentElement.setAttribute("data-theme","dark");
+    document.documentElement.classList.add("theme-manual");
+  }
+  // Si pas de choix sauvegardé : aucun data-theme → le @media CSS prend le relais
 })();
 </script>
 <style>
@@ -48,9 +54,9 @@ html[data-theme="light"] body{
   --xp-bar-bg:rgba(0,0,0,.1);--wc-next-bg:rgba(0,0,0,.03);--bg-grad1:rgba(168,118,42,0.06);--bg-grad2:rgba(46,138,106,0.05);
   --btn-outline-bg:rgba(0,0,0,.05);--result-cell-bg:rgba(0,0,0,.03);--replay-missed-bg:rgba(0,0,0,.04);
 }
+/* Mode automatique : suit la préférence système si aucun choix manuel */
 @media(prefers-color-scheme:light){
-  body:not(.dark-mode),
-  html:not([data-theme="dark"]) body{
+  html:not([data-theme="dark"]):not([data-theme="light"]) body{
     --ink:#f4f1ea;--card:#ffffff;--card2:#f0ece2;--border:rgba(160,120,40,0.22);
     --gold:#a8762a;--gold2:#8a5e1a;--rose:#c45070;--sage:#2e8a6a;--sky:#2a6fa8;
     --text:#2a2d3a;--muted:#6b6e80;--white:#1a1c28;--green:#1a8a4a;--red:#c43030;--purple:#6b4dc4;
@@ -1738,15 +1744,19 @@ if(isIOS()&&!isInStandaloneMode()&&localStorage.getItem("vi_installed")!=="1")se
   const btn=document.getElementById("themeToggle");
   const sun=document.getElementById("themeIconSun");
   const moon=document.getElementById("themeIconMoon");
-  // Detect system preference
   const prefersDark=window.matchMedia("(prefers-color-scheme:dark)");
 
+  function getSavedTheme(){
+    try{return localStorage.getItem("vi_theme");}catch(e){return null;}
+  }
+
   function getEffectiveTheme(){
-    try{const t=localStorage.getItem("vi_theme");if(t)return t;}catch(e){}
+    const saved=getSavedTheme();
+    if(saved)return saved;
     return prefersDark.matches?"dark":"light";
   }
 
-  function applyTheme(theme){
+  function applyTheme(theme,isManual){
     if(theme==="light"){
       document.documentElement.setAttribute("data-theme","light");
       document.body.classList.add("light-mode");
@@ -1760,26 +1770,53 @@ if(isIOS()&&!isInStandaloneMode()&&localStorage.getItem("vi_installed")!=="1")se
       sun.style.display="none";
       moon.style.display="block";
     }
-    // Update theme-color meta (barre système iOS/Android)
     const meta=document.querySelector('meta[name="theme-color"]');
     if(meta)meta.setAttribute("content",theme==="light"?"#f4f1ea":"#0c0f1a");
   }
 
-  // Init on load
-  applyTheme(getEffectiveTheme());
+  function resetToAuto(){
+    // Supprime data-theme pour laisser @media CSS gérer
+    document.documentElement.removeAttribute("data-theme");
+    document.body.classList.remove("light-mode","dark-mode");
+    try{localStorage.removeItem("vi_theme");}catch(e){}
+    // Met à jour l'icône selon la préférence système actuelle
+    const isDark=prefersDark.matches;
+    sun.style.display=isDark?"none":"block";
+    moon.style.display=isDark?"block":"none";
+    const meta=document.querySelector('meta[name="theme-color"]');
+    if(meta)meta.setAttribute("content",isDark?"#0c0f1a":"#f4f1ea");
+  }
 
-  // Écoute les changements système (iOS/Android) en temps réel
+  // Init : applique le thème sauvegardé si présent, sinon sync l'icône avec le système
+  const saved=getSavedTheme();
+  if(saved){
+    applyTheme(saved,true);
+  } else {
+    // Pas de choix manuel : on laisse le CSS gérer, on sync juste l'icône
+    const isDark=prefersDark.matches;
+    sun.style.display=isDark?"none":"block";
+    moon.style.display=isDark?"block":"none";
+  }
+
+  // Écoute les changements système en temps réel (quand pas de choix manuel)
   prefersDark.addEventListener("change",e=>{
-    var saved;
-    try{saved=localStorage.getItem("vi_theme");}catch(err){}
-    if(!saved) applyTheme(e.matches?"dark":"light");
+    if(!getSavedTheme()){
+      // Pas de choix manuel → suit le système
+      const isDark=e.matches;
+      sun.style.display=isDark?"none":"block";
+      moon.style.display=isDark?"block":"none";
+      const meta=document.querySelector('meta[name="theme-color"]');
+      if(meta)meta.setAttribute("content",isDark?"#0c0f1a":"#f4f1ea");
+      // Pas besoin de toucher data-theme : le @media CSS s'en charge
+    }
   });
 
+  // Clic sur le bouton : bascule manuellement
   btn.addEventListener("click",()=>{
-    const current=document.body.classList.contains("light-mode")?"light":"dark";
+    const current=getEffectiveTheme();
     const next=current==="light"?"dark":"light";
     try{localStorage.setItem("vi_theme",next);}catch(e){}
-    applyTheme(next);
+    applyTheme(next,true);
   });
 })();
 
